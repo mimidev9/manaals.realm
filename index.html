@@ -883,7 +883,7 @@
                         </div>
 
                         <div class="npc-fact-panel">
-                            <p class="npc-fact-label">🔬 Fact #<span id="npcFactNum">1</span> of 6</p>
+                            <p class="npc-fact-label">🔬 Fact #<span id="npcFactNum">1</span> of 4</p>
                             <p id="npcFactText">It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.</p>
                             <button onclick="nextNpcFact()" class="npc-fact-btn">Next Fact →</button>
                         </div>
@@ -1136,12 +1136,10 @@
         }
 
         // NPC fun facts carousel
-        const npcFacts = [
-            "It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.",
+        const npcFacts =
             "Around 30 million molecules can pass through nuclear pores every single minute inside a busy cell.",
             "A typical human cell has 2,000–4,000 of these pores puncturing its nuclear envelope like tiny airlocks.",
             "It's built from over 30 different proteins, repeated dozens of times — one of the largest molecular machines in biology.",
-            "Small molecules just diffuse through freely. Anything bigger? It needs an escort, or it's not getting in.",
             "This exact structure (PDB 7R5K) was modeled at near-atomic resolution — we can basically see individual amino acids doing their job."
         ];
         let npcFactIndex = 0;
