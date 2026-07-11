@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biotech × Environment - Manaal's Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        :root{
+            --name-color:#EDF2F7;
+            --body-color:#B0B8C4;
+            --accent:#4FE0B0; /* electric mint — swap to #FF6B6B for coral */
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float infinite ease-in-out;
+        }
+        
+        .dna-spin {
+            animation: spin 10s linear infinite;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            overflow-x: hidden;
+        }
+        
+        .section {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .section.active {
+            display: flex;
+        }
+        
+        .nav-link.active {
+            color: var(--accent);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent), #ff1493);
+            border-radius: 10px;
+        }
+        
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .tooltip-trigger:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .accent-word{ color: var(--accent); transition: color .3s ease, transform .3s ease; }
+        .accent-word:hover{ transform: translateY(-2px); }
+
+        .hover-outcome{ transition: color .4s ease; }
+        .hover-group:hover .hover-outcome{ color: var(--accent); }
+
+        .warning-box{
+            border: 2px dashed var(--accent);
+            padding: 20px;
+            background: rgba(79,224,176,0.05);
+            transition: background .3s ease;
+        }
+        .warning-box:hover{ background: rgba(79,224,176,0.1); }
+
+        /* ====== CONTAINMENT STATUS STYLES ====== */
+        .lab-status {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-family: 'Inter', 'Source Sans Pro', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--accent);
+          cursor: default;
+          padding: 6px 12px;
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          transition: all 0.3s ease;
+          user-select: none;
+          letter-spacing: 0.3px;
+        }
+        .lab-status:hover {
+          border-color: rgba(255, 107, 107, 0.3);
+          background: rgba(255, 255, 255, 0.03);
+        }
+        .status-dot {
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #4FE0B0;
+          transition: background-color 0.4s ease, box-shadow 0.4s ease;
+          flex-shrink: 0;
+        }
+        .status-dot.pulse {
+          animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.85); }
+        }
+        .lab-status.hover-state .status-dot {
+          background-color: #FF6B6B;
+          box-shadow: 0 0 12px rgba(255, 107, 107, 0.4);
+        }
+        .lab-status.hover-state .status-label {
+          color: #FF6B6B;
+        }
+        .lab-status.hover-state {
+          border-color: rgba(255, 107, 107, 0.2);
+        }
+
+        .social-pill{
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          padding: 7px 16px;
+          border: 1px solid var(--accent);
+          border-radius: 999px;
+          color: var(--accent);
+          font-size: 13px;
+          font-weight: 600;
+          transition: all .3s ease;
+        }
+        .social-pill:hover{
+          background: rgba(79,224,176,0.1);
+          transform: translateY(-1px);
+        }
+
+        /* ====== PETRI DISH STYLES ====== */
+        .colony-card{
+          cursor:pointer;
+          text-align:center;
+          padding: 28px 20px;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,0.06);
+          background: rgba(255,255,255,0.015);
+          transition: all .4s ease;
+        }
+        .colony-card:hover{
+          border-color: rgba(255,255,255,0.15);
+          transform: translateY(-4px);
+        }
+        .petri-dish{
+          position: relative;
+          width: 150px;
+          height:150px;
+          margin: 0 auto 22px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05), rgba(255,255,255,0.01) 70%);
+          border: 2px solid rgba(255,255,255,0.12);
+          overflow:hidden;
+          box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+        }
+        .colony-blob{
+          position:absolute;
+          width:38%;
+          height:38%;
+          top:50%;
+          left:50%;
+          transform: translate(-50%,-50%) scale(1);
+          background: var(--colony-color);
+          border-radius: 40% 60% 55% 45% / 55% 45% 60% 40%;
+          opacity:0.85;
+          box-shadow: 0 0 30px var(--colony-color);
+          transition: all .6s ease;
+        }
+        .colony-card:hover .colony-blob{
+          width:62%;
+          height:62%;
+          border-radius: 50% 50% 45% 55% / 45% 55% 50% 50%;
+          opacity:1;
+        }
+        .colony-title{
+          font-size:19px;
+          font-weight:700;
+          color: var(--name-color);
+          margin-bottom:2px;
+        }
+        .colony-year{
+          font-weight:400;
+          color: var(--body-color);
+          font-size:15px;
+        }
+        .colony-phase{
+          font-size:13px;
+          font-style: italic;
+          color: var(--colony-color);
+          margin-bottom:16px;
+          letter-spacing:0.3px;
+        }
+        .colony-details{
+          text-align:left;
+          list-style:none;
+          padding:0;
+          margin:0 0 16px 0;
+          font-size:13px;
+          line-height:1.7;
+          color: var(--body-color);
+        }
+        .colony-details li span{
+          color: var(--name-color);
+          font-weight:600;
+        }
+        .microscope-hint{
+          font-size:11px;
+          letter-spacing:0.5px;
+          text-transform:uppercase;
+          color: var(--colony-color);
+          opacity:0.7;
+          transition: opacity .3s ease;
+        }
+        .colony-card:hover .microscope-hint{
+          opacity:1;
+        }
+        .microscope-view{
+          max-height:0;
+          overflow:hidden;
+          opacity:0;
+          transition: all .4s ease;
+          font-size:13px;
+          font-style:italic;
+          color: var(--colony-color);
+          margin-top:0;
+        }
+        .colony-card.revealed .microscope-view{
+          max-height:120px;
+          opacity:1;
+          margin-top:14px;
+          padding-top:14px;
+          border-top: 1px dashed rgba(255,255,255,0.12);
+        }
+        .colony-card.revealed .microscope-hint{
+          display:none;
+        }
+
+        /* ====== COMING SOON PROJECT CARDS ====== */
+        .blurred-content{
+          filter: blur(5px);
+          opacity: 0.4;
+          transition: filter .4s ease, opacity .4s ease;
+          pointer-events: none;
+          user-select: none;
+        }
+        .project-card:hover .blurred-content{
+          filter: blur(3px);
+          opacity: 0.5;
+        }
+        .coming-soon-overlay{
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          z-index: 10;
+          text-align: center;
+          padding: 20px;
+        }
+        .coming-soon-badge{
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          padding: 8px 18px;
+          border-radius: 999px;
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(2px);
+          transition: all .35s ease;
+        }
+        .project-card:hover .coming-soon-badge{
+          transform: scale(1.05);
+        }
+        .coming-soon-sub{
+          font-size: 12px;
+          font-style: italic;
+          color: var(--body-color);
+          opacity: 0;
+          transform: translateY(4px);
+          transition: all .35s ease;
+          max-width: 220px;
+        }
+        .project-card:hover .coming-soon-sub{
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* ====== COMING SOON TOAST ====== */
+        #comingSoonToast{
+          position: fixed;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%) translateY(20px) scale(0.92);
+          opacity: 0;
+          pointer-events: none;
+          z-index: 100;
+          background: rgba(10,10,10,0.94);
+          border: 1px solid var(--accent);
+          border-radius: 14px;
+          padding: 14px 22px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 0 30px rgba(79,224,176,0.25);
+          transition: opacity .35s ease, transform .35s ease;
+          max-width: 90%;
+        }
+        #comingSoonToast.show{
+          opacity: 1;
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+        #comingSoonToast .toast-icon{
+          font-size: 18px;
+          flex-shrink: 0;
+        }
+        #comingSoonToast .toast-text{
+          font-size: 14px;
+          color: var(--name-color);
+          line-height: 1.4;
+        }
+
+        /* ====== NUCLEAR PORE COMPLEX VIEWER ====== */
+        .npc-viewer-wrap{
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        @media (min-width: 768px){
+          .npc-viewer-wrap{
+            grid-template-columns: 1.3fr 1fr;
+          }
+        }
+        #npcContainer{
+          width: 100%;
+          height: 380px;
+          border-radius: 16px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: radial-gradient(circle at 50% 50%, rgba(157,0,255,0.06), rgba(0,0,0,0.25));
+          cursor: grab;
+          overflow: hidden;
+          position: relative;
+        }
+        #npcContainer:active{
+          cursor: grabbing;
+        }
+        .npc-drag-hint{
+          position: absolute;
+          bottom: 12px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 11px;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          color: var(--body-color);
+          opacity: 0.6;
+          pointer-events: none;
+        }
+        .npc-fact-panel{
+          border: 1px dashed var(--accent);
+          border-radius: 16px;
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          background: rgba(255,255,255,0.015);
+        }
+        .npc-fact-label{
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: var(--accent);
+          margin-bottom: 10px;
+          font-weight: 700;
+        }
+        #npcFactText{
+          color: var(--body-color);
+          font-size: 15px;
+          line-height: 1.7;
+          margin-bottom: 18px;
+          min-height: 95px;
+        }
+        .npc-fact-btn{
+          align-self: flex-start;
+          padding: 8px 18px;
+          border-radius: 999px;
+          border: 1px solid var(--accent);
+          color: var(--accent);
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          background: transparent;
+          transition: all .3s ease;
+        }
+        .npc-fact-btn:hover{
+          background: rgba(79,224,176,0.1);
+          transform: translateY(-1px);
+        }
+        .npc-credit{
+          font-size: 11px;
+          color: var(--body-color);
+          opacity: 0.6;
+          margin-top: 14px;
+        }
+        .npc-credit a{
+          color: var(--accent);
+          text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-black text-white min-h-screen">
+
+    <!-- Particles Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- DNA Helix Background -->
+    <div class="fixed inset-0 opacity-10 pointer-events-none z-0">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="dnaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4FE0B0;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#ff1493;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#9d00ff;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M 0 200 Q 150 100 300 200 T 600 200 T 900 200 T 1200 200 T 1500 200" 
+                  stroke="url(#dnaGradient)" stroke-width="3" fill="none" class="animate-pulse"/>
+            <path d="M 0 220 Q 150 320 300 220 T 600 220 T 900 220 T 1200 220 T 1500 220" 
+                  stroke="url(#dnaGradient)" stroke-width="3" fill="none" class="animate-pulse"/>
+        </svg>
+    </div>
+
+    <!-- Mouse Glow Effect -->
+    <div id="mouseGlow" class="fixed w-96 h-96 rounded-full pointer-events-none opacity-20 blur-3xl transition-all duration-300 z-0"
+         style="background: radial-gradient(circle, #4FE0B0 0%, transparent 70%);"></div>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black bg-opacity-80 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-8 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-xl md:text-2xl font-bold whitespace-nowrap" style="color: var(--name-color);">
+                    BIOTECH <span style="color: var(--accent);">×</span> ENVIRONMENT
+                </h1>
+                
+                <div class="flex gap-8">
+                    <button onclick="showSection('home')" class="nav-link font-medium transition-colors active" style="color: var(--body-color);">
+                        Home
+                    </button>
+                    <button onclick="showSection('about')" class="nav-link font-medium transition-colors" style="color: var(--body-color);">
+                        About
+                    </button>
+                    <button onclick="showSection('work')" class="nav-link font-medium transition-colors" style="color: var(--body-color);">
+                        Work
+                    </button>
+                    <button onclick="showSection('Bench')" class="nav-link font-medium transition-colors" style="color: var(--body-color);">
+                        Bench
+                    </button>
+                </div>
+
+                <div class="flex gap-4 items-center">
+                    <div class="lab-status" 
+                         onmouseenter="this.classList.add('hover-state'); this.querySelector('.status-label').textContent='🧪 Lab Status: Breached';"
+                         onmouseleave="this.classList.remove('hover-state'); this.querySelector('.status-label').textContent='🧪 Lab Status: Stable';">
+                        <span class="status-label">🧪 Lab Status: Stable</span>
+                    </div>
+                    <a href="https://www.linkedin.com/in/manaal-fatima-869732391?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" style="color: var(--accent);" class="hover:opacity-70 transition-opacity" title="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>             
+                    <a href="mailto:Manaallf@outlook.com" style="color: var(--accent);" class="hover:opacity-70 transition-opacity" title="Email">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="relative z-10 pt-20">
+        
+        <!-- HOME SECTION -->
+        <section id="home" class="section active flex-col justify-center px-8 md:px-0">
+            <div style="margin-left:16%; margin-right:8%; max-width:900px;">
+
+                <svg class="dna-spin mb-6" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#4FE0B0" stroke-width="2">
+                    <path d="M2 15c6.667-6 13.333 0 20-6"></path>
+                    <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"></path>
+                    <path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"></path>
+                    <path d="m17 6-2.5-2.5"></path>
+                    <path d="m14 8-1-1"></path>
+                    <path d="m7 18 2.5 2.5"></path>
+                </svg>
+
+                <h1 class="font-semibold mb-3" style="color: var(--name-color); font-size:44px; line-height:1.15;">
+                    Hi, I'm Manaal.
+                </h1>
+
+                <p class="italic mb-8" style="color: var(--name-color); font-size:26px; opacity:.9;">
+                    I trick DNA into saving the planet. Occasionally, it tricks me back.
+                </p>
+
+                <div style="font-size:17px; line-height:1.7; color: var(--body-color); max-width:640px;" class="mb-8">
+                    <p class="mb-4">
+                        <span class="accent-word font-medium">An A Level student who settles disputes</span> between bacteria,
+                        chases <span class="accent-word font-medium">solutions that might save the planet</span>,
+                        and treats every explosion as a <span class="accent-word font-medium">paid lesson</span>.
+                    </p>
+                    <p class="mb-4">
+                        The highlight of my failure log? Culturing a 🦠 strain that learned to
+                        <span class="accent-word font-medium">disobey its own code</span>. I called it a "learning curve."
+                        The lab called it "The Incident." I was almost proud.
+                    </p>
+                </div>
+
+                <div class="warning-box rounded-md mb-8 max-w-xl">
+                    <p style="font-size:15px; font-weight:600; color: var(--body-color);">
+                        ⚠️ REQUIRED GEAR: Lab coat. Safety goggles. The ability to laugh when your experiment implodes. No whining allowed.
+                    </p>
+                </div>
+
+                <div class="hover-group cursor-default mb-10">
+                    <span style="font-size:20px; color: var(--accent); font-weight:500;">Go ahead, hover.</span>
+                    <span style="font-size:17px; color: var(--body-color);"> Witness either a Nobel-worthy breakthrough or a </span>
+                    <span class="hover-outcome" style="font-size:17px; font-weight:600; color: var(--body-color);">beautifully expensive mess.</span>
+                    <span style="font-size:17px; color: var(--body-color);"> I've budgeted for both.</span>
+                </div>
+
+                <button onclick="showSection('work')" class="group relative flex items-center gap-3 transition-all duration-300 font-medium mb-8" style="color: var(--accent); font-size:17px;">
+                    <span>Learn more about where I started from</span>
+                    <svg class="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </button>
+
+                <div class="flex gap-4">
+                    <div class="w-3 h-3 rounded-full animate-bounce hover:scale-150 transition-transform cursor-pointer" style="background-color: var(--accent);"></div>
+                    <div class="w-3 h-3 rounded-full bg-pink-500 animate-bounce hover:scale-150 transition-transform cursor-pointer" style="animation-delay: 0.2s;"></div>
+                    <div class="w-3 h-3 rounded-full bg-purple-500 animate-bounce hover:scale-150 transition-transform cursor-pointer" style="animation-delay: 0.4s;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="section items-center justify-center px-8 py-20">
+            <div style="margin-left:16%; margin-right:8%;" class="max-w-6xl w-full">
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Photo -->
+                    <div class="flex flex-col items-start gap-6">
+                        <div class="relative">
+                            <div class="absolute inset-0 rounded-full animate-pulse" style="background: radial-gradient(circle, rgba(79,224,176,0.4) 0%, transparent 70%); filter: blur(20px);"></div>
+                            <div class="absolute inset-0 rounded-full animate-pulse" style="background: radial-gradient(circle, rgba(255,20,147,0.3) 0%, transparent 70%); filter: blur(25px); animation-delay: 0.5s;"></div>
+                            
+                            <div class="relative w-52 h-52 rounded-full p-1 animate-pulse" style="background: linear-gradient(135deg, #4FE0B0, #ff1493, #9d00ff);">
+                                <div class="w-full h-full rounded-full bg-black p-1">
+                                    <img src="https://i.postimg.cc/ydWBmtdz/gog.png" 
+                                         alt="Manaal" 
+                                         class="w-full h-full rounded-full object-cover"
+                                         style="box-shadow: 0 0 30px rgba(79,224,176,0.5);">
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="flex gap-3">
+                            <a href="https://www.linkedin.com/in/manaal-fatima-869732391?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" class="social-pill">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                    <rect x="2" y="9" width="4" height="12"></rect>
+                                    <circle cx="4" cy="4" r="2"></circle>
+                                </svg>
+                                LinkedIn
+                            </a>
+                            <a href="mailto:Manaallf@outlook.com" class="social-pill">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                </svg>
+                                Email
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="font-bold" style="color: var(--name-color); font-size:40px; line-height:1.1;">
+                                Manaal Fatima
+                            </h3>
+                            <p class="font-semibold mt-2" style="color: var(--accent); font-size:20px;">
+                                PYNT Finalist • IESO Alumna • Aspiring Biotech Innovator
+                            </p>
+                        </div>
+                        <p style="color: var(--body-color); font-size:17px; line-height:1.7;">
+                            I am a biotech enthusiast with a deep commitment to environmental sustainability, a particular passion for microbial solutions, and the occasional tendency to name my favorite agar plates. I bridge lab work, synthetic biology, 3D modeling, and environmental science to tackle plastic degradation and climate resilience, and the eternal question of whether bacteria will cooperate today.
+                        </p>
+                        <p style="color: var(--body-color); font-size:17px; line-height:1.7;">
+                            From designing 3D models to visualize my ideas to culturing microbial pathways that break down pollutants, my work sits at the intersection of ambition and humility. The mission? Deploy biotech where it matters, revive the planet, and keep going— even when the bacteria have other plans.
+                        </p>
+                        
+                        <div class="flex gap-4 pt-4">
+                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg" style="border: 1px solid var(--accent);">
+                                <p class="font-bold" style="color: var(--accent); font-size:28px;">4+</p>
+                                <p style="color: var(--body-color); font-size:13px;">Projects</p>
+                            </div>
+                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg border border-pink-500">
+                                <p class="text-3xl font-bold text-pink-500">15+</p>
+                                <p style="color: var(--body-color); font-size:13px;">Skills</p>
+                            </div>
+                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg border border-purple-500">
+                                <p class="text-3xl font-bold text-purple-500">∞</p>
+                                <p style="color: var(--body-color); font-size:13px;">Ideas</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- WORK SECTION -->
+        <section id="work" class="section py-20 px-8">
+            <div style="margin-left:16%; margin-right:8%;" class="max-w-7xl w-full">
+                <h2 class="font-bold mb-4" style="color: var(--name-color); font-size:44px;">
+                    LIVING PROJECTS
+                </h2>
+                <p style="color: var(--body-color);" class="mb-16 text-lg">
+                    Hover to explore • Click to dive deeper
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    
+                    <!-- PROJECT 1 -->
+                    <div class="project-card group relative bg-black bg-opacity-40 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 overflow-hidden" style="border-color: #39ff14;" onmouseenter="this.style.boxShadow='0 0 30px #39ff14'" onmouseleave="this.style.boxShadow='0 0 0px #39ff14'">
+                        <div class="blurred-content">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="p-3 rounded-xl" style="background-color: #39ff1420; box-shadow: 0 0 20px #39ff1440;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#39ff14" stroke-width="2">
+                                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+                                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-2xl font-bold" style="color: #39ff14;">
+                                    The Case of the dead Moss-Mob
+                                </h3>
+                            </div>
+                            <p style="color: var(--body-color);" class="mb-4 leading-relaxed">
+                                Living air quality monitors using genetically modified organisms that change color based on pollution levels
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #39ff14; color: #39ff14; background-color: #39ff1410;">
+                                    Bacterial Catastrophie 
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #39ff14; color: #39ff14; background-color: #39ff1410;">
+                                    Environmental Monitoring
+                                </span>
+                            </div>
+                        </div>
+                        <div class="coming-soon-overlay">
+                            <span class="coming-soon-badge" style="border: 1.5px solid #39ff14; color: #39ff14;">🔒 Coming Soon</span>
+                            <p class="coming-soon-sub">Still recovering from The Incident.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- PROJECT 2 -->
+                    <div class="project-card group relative bg-black bg-opacity-40 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 overflow-hidden" style="border-color: #ff1493;" onmouseenter="this.style.boxShadow='0 0 30px #ff1493'" onmouseleave="this.style.boxShadow='0 0 0px #ff1493'">
+                        <div class="blurred-content">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="p-3 rounded-xl" style="background-color: #ff149320; box-shadow: 0 0 20px #ff149340;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff1493" stroke-width="2">
+                                        <path d="M6 18h8"></path>
+                                        <path d="M3 22h18"></path>
+                                        <path d="M14 22a7 7 0 1 0 0-14h-1"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-2xl font-bold" style="color: #ff1493;">
+                                    Myco-Remediation Tracker
+                                </h3>
+                            </div>
+                            <p style="color: var(--body-color);" class="mb-4 leading-relaxed">
+                                Mushroom colonies engineered to break down pollutants with real-time degradation tracking
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #ff1493; color: #ff1493; background-color: #ff149310;">
+                                    Mycology
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #ff1493; color: #ff1493; background-color: #ff149310;">
+                                    Bioremediation
+                                </span>
+                            </div>
+                        </div>
+                        <div class="coming-soon-overlay">
+                            <span class="coming-soon-badge" style="border: 1.5px solid #ff1493; color: #ff1493;">🔒 Coming Soon</span>
+                            <p class="coming-soon-sub">Fungi are camera-shy.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- PROJECT 3 -->
+                    <div class="project-card group relative bg-black bg-opacity-40 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 overflow-hidden" style="border-color: #4FE0B0;" onmouseenter="this.style.boxShadow='0 0 30px #4FE0B0'" onmouseleave="this.style.boxShadow='0 0 0px #4FE0B0'">
+                        <div class="blurred-content">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="p-3 rounded-xl" style="background-color: #4FE0B020; box-shadow: 0 0 20px #4FE0B040;">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4FE0B0" stroke-width="2">
+                                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-2xl font-bold" style="color: #4FE0B0;">
+                                    Termite Gut bacteria Extraction
+                                </h3>
+                            </div>
+                            <p style="color: var(--body-color);" class="mb-4 leading-relaxed">
+                                Carbon capture through photobioreactors with stunning visual displays and CO2 monitoring
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #4FE0B0; color: #4FE0B0; background-color: #4FE0B010;">
+                                   Dissection
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #4FE0B0; color: #4FE0B0; background-color: #4FE0B010;">
+                                   Bacterial decomposition
+                                </span>
+                            </div>
+                        </div>
+                        <div class="coming-soon-overlay">
+                            <span class="coming-soon-badge" style="border: 1.5px solid #4FE0B0; color: #4FE0B0;">🔒 Coming Soon</span>
+                            <p class="coming-soon-sub">Currently interrogating termites.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- PROJECT 4 -->
+                    <div class="project-card group relative bg-black bg-opacity-40 backdrop-blur-sm border rounded-2xl p-8 cursor-pointer transition-all duration-500 hover:scale-105 overflow-hidden" style="border-color: #9d00ff;" onmouseenter="this.style.boxShadow='0 0 30px #9d00ff'" onmouseleave="this.style.boxShadow='0 0 0px #9d00ff'">
+                        <div class="blurred-content">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="p-3 rounded-xl" style="background-color: #9d00ff20; box-shadow: 0 0 20px #9d00ff40;">
+                                    <svg class="dna-spin" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9d00ff" stroke-width="2">
+                                        <path d="M2 15c6.667-6 13.333 0 20-6"></path>
+                                        <path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-2xl font-bold" style="color: #9d00ff;">
+                                    CRISPR Playground
+                                </h3>
+                            </div>
+                            <p style="color: var(--body-color);" class="mb-4 leading-relaxed">
+                                Interactive gene editing experiments with beautiful visualizations of molecular mechanisms
+                            </p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #9d00ff; color: #9d00ff; background-color: #9d00ff10;">
+                                    Gene Editing
+                                </span>
+                                <span class="px-3 py-1 rounded-full text-xs font-medium border" style="border-color: #9d00ff; color: #9d00ff; background-color: #9d00ff10;">
+                                    CRISPR
+                                </span>
+                            </div>
+                        </div>
+                        <div class="coming-soon-overlay">
+                            <span class="coming-soon-badge" style="border: 1.5px solid #9d00ff; color: #9d00ff;">🔒 Coming Soon</span>
+                            <p class="coming-soon-sub">Redacted pending ethics review.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- BENCH SECTION (Petri Dish + NPC Viewer) -->
+        <section id="Bench" class="section py-20 px-8">
+            <div style="margin-left:16%; margin-right:8%;" class="max-w-6xl w-full">
+                <h2 class="font-bold mb-2" style="color: var(--name-color); font-size:44px;">
+                    🧫 Inoculated
+                </h2>
+                <p style="color: var(--body-color);" class="mb-16 text-lg italic">
+                    What I've grown. Literally and metaphorically.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+                    <!-- Colony 1 -->
+                    <div class="colony-card" style="--colony-color:#4FE0B0;" onclick="this.classList.toggle('revealed')">
+                        <div class="petri-dish">
+                            <div class="colony-blob"></div>
+                        </div>
+                        <h3 class="colony-title">Colony 1 <span class="colony-year">— 2024</span></h3>
+                        <p class="colony-phase">The Rookie Phase</p>
+                        <ul class="colony-details">
+                            <li><span>Inoculated with:</span> Enthusiasm and a clean lab coat.</li>
+                            <li><span>Growth:</span> Slow. Needed more nutrients (i.e., sleep).</li>
+                            <li><span>Contaminants:</span> Imposter syndrome. Survived anyway.</li>
+                        </ul>
+                        <p class="microscope-hint">🔬 Click to view under microscope</p>
+                        <div class="microscope-view">
+                            "This was the year I cried in my school lab mid afternoon. Twice."
+                        </div>
+                    </div>
+
+                    <!-- Colony 2 -->
+                    <div class="colony-card" style="--colony-color:#FF6B6B;" onclick="this.classList.toggle('revealed')">
+                        <div class="petri-dish">
+                            <div class="colony-blob"></div>
+                        </div>
+                        <h3 class="colony-title">Colony 2 <span class="colony-year">— 2025</span></h3>
+                        <p class="colony-phase">The Rebellious Phase</p>
+                        <ul class="colony-details">
+                            <li><span>Inoculated with:</span> Bacterial drama and failed experiments.</li>
+                            <li><span>Growth:</span> Explosive. Too much. Had to be contained.</li>
+                            <li><span>Contaminants:</span> Hubris. Learned my lesson.</li>
+                        </ul>
+                        <p class="microscope-hint">🔬 Click to view under microscope</p>
+                        <div class="microscope-view">
+                            "I once texted my supervisor 'it's probably fine' at 2am. It was not fine."
+                        </div>
+                    </div>
+
+                    <!-- Colony 3 -->
+                    <div class="colony-card" style="--colony-color:#9d00ff;" onclick="this.classList.toggle('revealed')">
+                        <div class="petri-dish">
+                            <div class="colony-blob"></div>
+                        </div>
+                        <h3 class="colony-title">Colony 3 <span class="colony-year">— 2026</span></h3>
+                        <p class="colony-phase">The Diplomatic Phase</p>
+                        <ul class="colony-details">
+                            <li><span>Inoculated with:</span> Environmental solutions and Strain culturing.</li>
+                            <li><span>Growth:</span> Steady. Controlled. Professional.</li>
+                            <li><span>Contaminants:</span> Still a little messy. But we're getting there.</li>
+                        </ul>
+                        <p class="microscope-hint">🔬 Click to view under microscope</p>
+                        <div class="microscope-view">
+                            "I still Google things I definitely should already know. Don't tell anyone."
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Nuclear Pore Complex Viewer -->
+                <div class="mt-16">
+                    <h3 class="font-bold mb-1" style="color: var(--name-color); font-size:26px;">
+                        👽 The Alien of Biology: NPC-220
+                    </h3>
+                    <p style="color: var(--body-color);" class="mb-6 text-sm italic">
+                        Drag to rotate. This thing checks IDs at your nucleus's front door 30 million times a minute.
+                    </p>
+
+                    <div class="npc-viewer-wrap">
+                        <div id="npcContainer">
+                            <div class="npc-drag-hint">Drag to rotate</div>
+                        </div>
+
+                        <div class="npc-fact-panel">
+                            <p class="npc-fact-label">🔬 Fact #<span id="npcFactNum">1</span> of 6</p>
+                            <p id="npcFactText">It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.</p>
+                            <button onclick="nextNpcFact()" class="npc-fact-btn">Next Fact →</button>
+                        </div>
+                    </div>
+
+                    <p class="npc-credit">
+                        Structure reference: PDB 7R5K · 
+                        <a href="https://3d.nih.gov/entries/3DPX-023501" target="_blank" rel="noopener noreferrer">NIH 3D Print Exchange</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 py-12 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <p style="color: var(--body-color);" class="mb-4">
+                © 2025 Biotech × Environment • Engineered with <span style="color: var(--accent);">♥</span> and DNA
+            </p>
+            <div class="flex gap-6 justify-center items-center">
+                <a href="https://www.linkedin.com/in/manaal-fatima-869732391?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" style="color: var(--body-color);" class="hover:opacity-70 transition-opacity flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                    LinkedIn
+                </a>
+                <a href="mailto:Manaallf@outlook.com" style="color: var(--body-color);" class="hover:opacity-70 transition-opacity flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                    Email
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Coming Soon Toast -->
+    <div id="comingSoonToast">
+        <span class="toast-icon">🧫</span>
+        <span class="toast-text">This experiment's still in progress — come back soon to watch the clumsy journey unfold.</span>
+    </div>
+
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        const colors = ['#4FE0B0', '#ff1493', '#39ff14', '#9d00ff'];
+        
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.width = (Math.random() * 4 + 2) + 'px';
+            particle.style.height = (Math.random() * 4 + 2) + 'px';
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+            particle.style.boxShadow = `0 0 ${Math.random() * 12 + 6}px ${particle.style.backgroundColor}`;
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Mouse glow effect
+        const mouseGlow = document.getElementById('mouseGlow');
+        document.addEventListener('mousemove', (e) => {
+            mouseGlow.style.left = (e.clientX - 192) + 'px';
+            mouseGlow.style.top = (e.clientY - 192) + 'px';
+        });
+
+        // ====== NUCLEAR PORE COMPLEX 3D VIEWER ======
+        let npcInitialized = false;
+        function initNpcViewer() {
+            if (npcInitialized) return;
+            const container = document.getElementById('npcContainer');
+            if (!container || typeof THREE === 'undefined') return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            if (width === 0 || height === 0) return;
+            npcInitialized = true;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+            camera.position.set(0, 1.5, 7);
+            camera.lookAt(0, 0, 0);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+            const light1 = new THREE.PointLight(0x9d00ff, 1.3, 25);
+            light1.position.set(5, 5, 5);
+            scene.add(light1);
+            const light2 = new THREE.PointLight(0x4FE0B0, 1.1, 25);
+            light2.position.set(-5, -3, 4);
+            scene.add(light2);
+
+            const group = new THREE.Group();
+            scene.add(group);
+
+            const spokeCount = 8;
+            const ringRadius = 1.8;
+
+            // Cytoplasmic + nuclear rings (8 nucleoporin "spokes" each)
+            const spokeGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.55, 12);
+            const spokeMat = new THREE.MeshStandardMaterial({
+                color: 0x4FE0B0,
+                metalness: 0.35,
+                roughness: 0.35,
+                emissive: 0x0d3d2e,
+                emissiveIntensity: 0.4
+            });
+            const spokeMat2 = new THREE.MeshStandardMaterial({
+                color: 0x9d00ff,
+                metalness: 0.35,
+                roughness: 0.35,
+                emissive: 0x2a0d4d,
+                emissiveIntensity: 0.4
+            });
+
+            for (let i = 0; i < spokeCount; i++) {
+                const angle = (i / spokeCount) * Math.PI * 2;
+                const x = Math.cos(angle) * ringRadius;
+                const z = Math.sin(angle) * ringRadius;
+
+                const topSpoke = new THREE.Mesh(spokeGeo, spokeMat);
+                topSpoke.position.set(x, 0.5, z);
+                group.add(topSpoke);
+
+                const bottomSpoke = new THREE.Mesh(spokeGeo, spokeMat2);
+                bottomSpoke.position.set(x, -0.5, z);
+                group.add(bottomSpoke);
+            }
+
+            // Central channel
+            const channelGeo = new THREE.TorusGeometry(1.1, 0.25, 20, 40);
+            const channelMat = new THREE.MeshStandardMaterial({
+                color: 0xFF6B6B,
+                metalness: 0.4,
+                roughness: 0.25,
+                emissive: 0x4d1414,
+                emissiveIntensity: 0.5
+            });
+            const channel = new THREE.Mesh(channelGeo, channelMat);
+            channel.rotation.x = Math.PI / 2;
+            group.add(channel);
+
+            // Cytoplasmic filaments (radiating upward/outward)
+            const filamentMat = new THREE.MeshStandardMaterial({
+                color: 0xff1493,
+                emissive: 0x4d0d33,
+                emissiveIntensity: 0.4
+            });
+            for (let i = 0; i < spokeCount; i++) {
+                const angle = (i / spokeCount) * Math.PI * 2;
+                const x = Math.cos(angle) * ringRadius;
+                const z = Math.sin(angle) * ringRadius;
+                const filGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.1, 6);
+                const fil = new THREE.Mesh(filGeo, filamentMat);
+                fil.position.set(x * 1.15, 1.15, z * 1.15);
+                fil.lookAt(x * 2.3, 2.3, z * 2.3);
+                fil.rotateX(Math.PI / 2);
+                group.add(fil);
+            }
+
+            // Nuclear basket (converging cage below)
+            const basketMat = new THREE.MeshStandardMaterial({
+                color: 0x4FE0B0,
+                emissive: 0x0d3d2e,
+                emissiveIntensity: 0.3
+            });
+            const basketBottom = new THREE.Vector3(0, -2.2, 0);
+            for (let i = 0; i < spokeCount; i++) {
+                const angle = (i / spokeCount) * Math.PI * 2;
+                const x = Math.cos(angle) * ringRadius * 0.7;
+                const z = Math.sin(angle) * ringRadius * 0.7;
+                const top = new THREE.Vector3(x, -0.6, z);
+                const dir = new THREE.Vector3().subVectors(basketBottom, top);
+                const len = dir.length();
+                const legGeo = new THREE.CylinderGeometry(0.035, 0.035, len, 6);
+                const leg = new THREE.Mesh(legGeo, basketMat);
+                leg.position.copy(top).add(dir.clone().multiplyScalar(0.5));
+                leg.lookAt(basketBottom);
+                leg.rotateX(Math.PI / 2);
+                group.add(leg);
+            }
+            const basketRing = new THREE.Mesh(
+                new THREE.TorusGeometry(0.35, 0.03, 10, 20),
+                basketMat
+            );
+            basketRing.position.copy(basketBottom);
+            basketRing.rotation.x = Math.PI / 2;
+            group.add(basketRing);
+
+            group.rotation.x = 0.15;
+
+            let isDragging = false;
+            let autoRotate = true;
+            let prevX = 0, prevY = 0;
+
+            renderer.domElement.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                autoRotate = false;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            });
+            window.addEventListener('mouseup', () => { isDragging = false; });
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                group.rotation.y += (e.clientX - prevX) * 0.008;
+                group.rotation.x += (e.clientY - prevY) * 0.008;
+                prevX = e.clientX;
+                prevY = e.clientY;
+            });
+
+            renderer.domElement.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                autoRotate = false;
+                prevX = e.touches[0].clientX;
+                prevY = e.touches[0].clientY;
+            }, { passive: true });
+            window.addEventListener('touchend', () => { isDragging = false; });
+            window.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                group.rotation.y += (e.touches[0].clientX - prevX) * 0.008;
+                group.rotation.x += (e.touches[0].clientY - prevY) * 0.008;
+                prevX = e.touches[0].clientX;
+                prevY = e.touches[0].clientY;
+            }, { passive: true });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                if (autoRotate) group.rotation.y += 0.0025;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                const w = container.clientWidth;
+                const h = container.clientHeight;
+                if (w === 0 || h === 0) return;
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            });
+        }
+
+        // NPC fun facts carousel
+        const npcFacts = [
+            "It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.",
+            "Around 30 million molecules can pass through nuclear pores every single minute inside a busy cell.",
+            "A typical human cell has 2,000–4,000 of these pores puncturing its nuclear envelope like tiny airlocks.",
+            "It's built from over 30 different proteins, repeated dozens of times — one of the largest molecular machines in biology.",
+            "Small molecules just diffuse through freely. Anything bigger? It needs an escort, or it's not getting in.",
+            "This exact structure (PDB 7R5K) was modeled at near-atomic resolution — we can basically see individual amino acids doing their job."
+        ];
+        let npcFactIndex = 0;
+        function nextNpcFact() {
+            npcFactIndex = (npcFactIndex + 1) % npcFacts.length;
+            document.getElementById('npcFactText').textContent = npcFacts[npcFactIndex];
+            document.getElementById('npcFactNum').textContent = npcFactIndex + 1;
+        }
+        
+        // Section switching
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update nav active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.closest('.nav-link').classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (sectionId === 'Bench') {
+                setTimeout(initNpcViewer, 50);
+            }
+        }
+        
+        // Hover spin effect for bacteria emoji
+        document.querySelectorAll('.hover-spin').forEach(el => {
+            el.addEventListener('mouseenter', function() {
+                this.style.animation = 'spin 0.5s linear';
+            });
+            el.addEventListener('mouseleave', function() {
+                this.style.animation = '';
+            });
+        });
+
+        // Coming Soon toast on project card click
+        const comingSoonToast = document.getElementById('comingSoonToast');
+        let toastTimeout;
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', () => {
+                comingSoonToast.classList.add('show');
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    comingSoonToast.classList.remove('show');
+                }, 3500);
+            });
+        });
+    </script>
+
+</body>
+</html>
