@@ -149,22 +149,183 @@
         }
         .nav-icon{
           flex-shrink: 0;
-          filter: drop-shadow(0 0 4px rgba(79,224,176,0.65));
-          transition: filter .3s ease;
+          color: var(--accent);
+          filter: drop-shadow(0 0 6px rgba(79,224,176,0.9)) drop-shadow(0 0 12px rgba(79,224,176,0.6));
+          transition: filter .3s ease, transform .3s ease;
         }
         .nav-link:hover .nav-icon,
         .nav-link.active .nav-icon{
-          filter: drop-shadow(0 0 7px rgba(79,224,176,0.9));
+          filter: drop-shadow(0 0 9px rgba(79,224,176,1)) drop-shadow(0 0 20px rgba(79,224,176,0.8));
+          transform: scale(1.1);
         }
 
         /* ====== NEON LOCATION TAG ====== */
         .neon-location{
-          font-size: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          font-size: 15px;
           font-weight: 600;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.6px;
           color: var(--accent);
           text-shadow: 0 0 8px rgba(79,224,176,0.7), 0 0 16px rgba(79,224,176,0.35);
-          text-align: center;
+        }
+        .neon-location-icon{
+          flex-shrink: 0;
+          filter: drop-shadow(0 0 6px rgba(79,224,176,0.75));
+        }
+
+        /* ====== ABOUT ANCHOR NAV ====== */
+        .about-top-anchor-nav{
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16px;
+          margin-bottom: 44px;
+          padding-bottom: 24px;
+          border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .about-anchor-link{
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 15px;
+          font-weight: 700;
+          letter-spacing: 0.2px;
+          color: var(--body-color);
+          text-decoration: none;
+          padding: 9px 18px;
+          border: 1.5px solid rgba(79,224,176,0.45);
+          border-radius: 999px;
+          box-shadow: 0 0 14px rgba(79,224,176,0.2);
+          transition: all .3s ease;
+        }
+        .about-anchor-link svg{
+          flex-shrink: 0;
+        }
+        .about-anchor-link:hover{
+          color: var(--name-color);
+          border-color: rgba(79,224,176,0.9);
+          background: rgba(79,224,176,0.1);
+          box-shadow: 0 0 28px rgba(79,224,176,0.45);
+          transform: translateY(-2px);
+        }
+        .about-sub-heading{
+          font-size: 26px;
+          font-weight: 700;
+          color: var(--name-color);
+          margin-bottom: 14px;
+          border-left: 3px solid var(--accent);
+          padding-left: 14px;
+        }
+        .about-sub-placeholder{
+          color: var(--body-color);
+          font-size: 15px;
+          font-style: italic;
+          padding-left: 17px;
+        }
+        .about-box{
+          border: 1px solid rgba(79,224,176,0.35);
+          border-radius: 16px;
+          padding: 32px;
+          background: rgba(79,224,176,0.02);
+          box-shadow: 0 0 25px rgba(79,224,176,0.12), inset 0 0 20px rgba(79,224,176,0.03);
+          transition: box-shadow .3s ease, border-color .3s ease;
+        }
+        .about-box:hover{
+          border-color: rgba(79,224,176,0.6);
+          box-shadow: 0 0 40px rgba(79,224,176,0.2), inset 0 0 25px rgba(79,224,176,0.05);
+        }
+
+        /* ====== EXPERIENCE / SKILLS / EDUCATION ====== */
+        .exp-item{
+          padding-bottom: 28px;
+          margin-bottom: 28px;
+          border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .exp-item:last-child{
+          border-bottom: none;
+          margin-bottom: 0;
+          padding-bottom: 0;
+        }
+        .exp-header{
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 16px;
+          margin-bottom: 10px;
+          flex-wrap: wrap;
+        }
+        .exp-title{
+          font-size: 19px;
+          font-weight: 700;
+          color: var(--name-color);
+          text-decoration: none;
+          transition: color .3s ease;
+        }
+        a.exp-title:hover{
+          color: var(--accent);
+        }
+        .exp-role{
+          font-size: 14.5px;
+          color: var(--accent);
+          font-style: italic;
+          margin-top: 2px;
+        }
+        .exp-year{
+          font-size: 14.5px;
+          font-weight: 600;
+          color: var(--body-color);
+          white-space: nowrap;
+          padding-top: 2px;
+        }
+        .exp-bullets{
+          list-style: none;
+          padding-left: 17px;
+          margin: 0;
+        }
+        .exp-bullets li{
+          position: relative;
+          color: var(--body-color);
+          font-size: 16.5px;
+          line-height: 1.75;
+          margin-bottom: 9px;
+        }
+        .exp-bullets li::before{
+          content: '▸';
+          position: absolute;
+          left: -17px;
+          color: var(--accent);
+        }
+        .skill-block{
+          margin-bottom: 26px;
+        }
+        .skill-block:last-child{
+          margin-bottom: 0;
+        }
+        .skill-block-title{
+          font-size: 16.5px;
+          font-weight: 700;
+          color: var(--name-color);
+          margin-bottom: 8px;
+        }
+        .skill-block-text{
+          color: var(--body-color);
+          font-size: 16.5px;
+          line-height: 1.75;
+        }
+        .skill-tag{
+          display: inline-block;
+          margin-left: 8px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+          text-transform: uppercase;
+          color: var(--accent);
+          border: 1px solid var(--accent);
+          padding: 2px 8px;
+          border-radius: 999px;
+          vertical-align: middle;
         }
 
         .social-pill{
@@ -495,6 +656,57 @@
           opacity: 0.6;
           pointer-events: none;
         }
+        .npc-corner{
+          position: absolute;
+          width: 18px;
+          height: 18px;
+          border-color: rgba(79,224,176,0.5);
+          pointer-events: none;
+        }
+        .npc-corner-tl{ top: 10px; left: 10px; border-top: 2px solid; border-left: 2px solid; }
+        .npc-corner-tr{ top: 10px; right: 10px; border-top: 2px solid; border-right: 2px solid; }
+        .npc-corner-bl{ bottom: 10px; left: 10px; border-bottom: 2px solid; border-left: 2px solid; }
+        .npc-corner-br{ bottom: 10px; right: 10px; border-bottom: 2px solid; border-right: 2px solid; }
+        .npc-readout{
+          position: absolute;
+          top: 12px;
+          left: 38px;
+          font-family: 'Courier New', monospace;
+          font-size: 10px;
+          letter-spacing: 1px;
+          color: var(--accent);
+          opacity: 0.7;
+          pointer-events: none;
+        }
+        .npc-label{
+          position: absolute;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.3px;
+          color: var(--name-color);
+          background: rgba(0,0,0,0.55);
+          border: 1px solid rgba(255,255,255,0.15);
+          padding: 4px 10px 4px 8px;
+          border-radius: 999px;
+          white-space: nowrap;
+          pointer-events: none;
+          transform: translate(-50%, -50%);
+          transition: opacity .2s ease;
+          backdrop-filter: blur(2px);
+          top: 0;
+          left: 0;
+        }
+        .npc-label-dot{
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--accent);
+          box-shadow: 0 0 6px rgba(79,224,176,0.8);
+          flex-shrink: 0;
+        }
         .npc-fact-panel{
           border: 1px dashed var(--accent);
           border-radius: 16px;
@@ -657,7 +869,7 @@
                 </h1>
 
                 <p class="italic mb-8" style="color: var(--name-color); font-size:26px; opacity:.9;">
-                    I trick biotech into saving the planet. Occasionally, it tricks me back.
+                    I trick DNA into saving the planet. Occasionally, it tricks me back.
                 </p>
 
                 <div style="font-size:17px; line-height:1.7; color: var(--body-color); max-width:640px;" class="mb-8">
@@ -732,6 +944,31 @@
         <section id="about" class="section items-center justify-center px-8 py-20">
             <div style="margin-left:16%; margin-right:8%;" class="max-w-6xl w-full">
                 
+                <div class="about-top-anchor-nav">
+                    <a href="#experience-section" class="about-anchor-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+                            <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <path d="M3 12h18"></path>
+                        </svg>
+                        Experience
+                    </a>
+                    <a href="#skills-section" class="about-anchor-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 3h6"></path>
+                            <path d="M10 3v5.5L4.5 18a2 2 0 0 0 1.7 3h11.6a2 2 0 0 0 1.7-3L14 8.5V3"></path>
+                        </svg>
+                        Skills
+                    </a>
+                    <a href="#education-section" class="about-anchor-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10 12 5 2 10l10 5 10-5Z"></path>
+                            <path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"></path>
+                        </svg>
+                        Education
+                    </a>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     
                     <!-- Photo -->
@@ -751,7 +988,14 @@
                             
                         </div>
 
-                        <p class="neon-location" style="width:13rem;">📍 Lahore, Pakistan</p>
+                        <p class="neon-location" style="width:13rem;">
+                            <svg class="neon-location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            Lahore, Pakistan
+                        </p>
 
                         <div class="flex gap-3">
                             <a href="https://www.linkedin.com/in/manaal-fatima-869732391?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" class="social-pill">
@@ -788,23 +1032,91 @@
                         <p style="color: var(--body-color); font-size:17px; line-height:1.7;">
                             From designing 3D models to visualize my ideas to culturing microbial pathways that break down pollutants, my work sits at the intersection of ambition and humility. The mission? Deploy biotech where it matters, revive the planet, and keep going— even when the bacteria have other plans.
                         </p>
-                        
-                        <div class="flex gap-4 pt-4">
-                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg" style="border: 1px solid var(--accent);">
-                                <p class="font-bold" style="color: var(--accent); font-size:28px;">4+</p>
-                                <p style="color: var(--body-color); font-size:13px;">Projects</p>
+                    </div>
+                    
+                </div>
+
+                <div class="mt-20 space-y-16">
+                    <div id="experience-section">
+                        <h3 class="about-sub-heading">Experience</h3>
+
+                        <div class="exp-item">
+                            <div class="exp-header">
+                                <div>
+                                    <a href="https://www.linkedin.com/in/manaal-fatima-869732391/edit/forms/position/2948162491/" target="_blank" rel="noopener noreferrer" class="exp-title">International Earth Science Olympiad (IESO)</a>
+                                    <p class="exp-role">Competitor & Selected Participant</p>
+                                </div>
+                                <span class="exp-year">2025</span>
                             </div>
-                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg border border-pink-500">
-                                <p class="text-3xl font-bold text-pink-500">15+</p>
-                                <p style="color: var(--body-color); font-size:13px;">Skills</p>
+                            <ul class="exp-bullets">
+                                <li>Selected as one of the few students nationwide to represent Pakistan at the International Earth Science Olympiad, organized by IGEO and held in Shandong, China.</li>
+                                <li>Contributed to the team's first historic achievement — winning multiple gold, silver, and bronze medals.</li>
+                                <li>Delivered a presentation on the historical flood situation in Pakistan, highlighting critical environmental issues.</li>
+                            </ul>
+                        </div>
+
+                        <div class="exp-item">
+                            <div class="exp-header">
+                                <div>
+                                    <a href="https://www.linkedin.com/in/manaal-fatima-869732391/edit/forms/position/2948165240/" target="_blank" rel="noopener noreferrer" class="exp-title">Pakistan Young Naturalists Tournament (PYNT)</a>
+                                    <p class="exp-role">National Finalist · Pakistan Young Innovative Minds (PYIMS)</p>
+                                </div>
+                                <span class="exp-year">2023</span>
                             </div>
-                            <div class="text-center p-4 bg-black bg-opacity-40 rounded-lg border border-purple-500">
-                                <p class="text-3xl font-bold text-purple-500">∞</p>
-                                <p style="color: var(--body-color); font-size:13px;">Ideas</p>
+                            <ul class="exp-bullets">
+                                <li>Selected to represent the Pakistan team as a National Finalist at the International Young Naturalist Tournament (IYNT).</li>
+                                <li>Collaborated with a diverse team to develop innovative solutions and strategies, advancing to the top 6 teams.</li>
+                                <li>Demonstrated critical thinking and problem-solving skills while competing against top teams globally.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="skills-section">
+                        <h3 class="about-sub-heading">Skills</h3>
+
+                        <div class="skill-block">
+                            <h4 class="skill-block-title">💻 Web Development</h4>
+                            <ul class="exp-bullets">
+                                <li>Developed websites using Adobe Dreamweaver and various external software tools.</li>
+                                <li>Enhanced user experience through responsive design and optimization techniques.</li>
+                            </ul>
+                        </div>
+
+                        <div class="skill-block">
+                            <h4 class="skill-block-title">🧬 3D Designing</h4>
+                            <p class="skill-block-text">
+                                Building foundational skills using Benchling and PDB-101.
+                                <span class="skill-tag">Beginner · Ongoing</span>
+                            </p>
+                        </div>
+
+                        <div class="skill-block">
+                            <h4 class="skill-block-title">🎤 Presentation & Analytical Skills</h4>
+                            <ul class="exp-bullets">
+                                <li>Authored and delivered two presentations on distinct topics during the PYNT tournament while in Grade 9, demonstrating strong research and public speaking ability at an early stage.</li>
+                                <li>Served as an opposer and reviewer, sharpening analytical and critical evaluation skills.</li>
+                            </ul>
+                        </div>
+
+                        <div class="skill-block">
+                            <h4 class="skill-block-title">🏀 Competitive Sports</h4>
+                            <p class="skill-block-text">
+                                Earned 7+ gold medals in competitive basketball, sharpening observational instincts, disciplined training habits, and strong team coordination.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="education-section">
+                        <h3 class="about-sub-heading">Education</h3>
+                        <div class="exp-item" style="border-bottom:none; padding-bottom:0; margin-bottom:0;">
+                            <div class="exp-header">
+                                <div>
+                                    <p class="exp-title" style="cursor:default;">Lahore Grammar School OPF</p>
+                                    <p class="exp-role">O Levels & A Levels</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </section>
@@ -816,7 +1128,7 @@
                     LIVING PROJECTS
                 </h2>
                 <p style="color: var(--body-color);" class="mb-16 text-lg">
-                    In progress 
+                    Under construction, like most of my life decisions.
                 </p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1032,11 +1344,16 @@
 
                     <div class="npc-viewer-wrap">
                         <div id="npcContainer">
+                            <div class="npc-corner npc-corner-tl"></div>
+                            <div class="npc-corner npc-corner-tr"></div>
+                            <div class="npc-corner npc-corner-bl"></div>
+                            <div class="npc-corner npc-corner-br"></div>
+                            <div class="npc-readout">NPC–220 · LIVE MODEL</div>
                             <div class="npc-drag-hint">Drag to rotate</div>
                         </div>
 
                         <div class="npc-fact-panel">
-                            <p class="npc-fact-label">🔬 Fact #<span id="npcFactNum">1</span> of 6</p>
+                            <p class="npc-fact-label">🔬 Fact #<span id="npcFactNum">1</span> of 3</p>
                             <p id="npcFactText">It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.</p>
                             <button onclick="nextNpcFact()" class="npc-fact-btn">Next Fact →</button>
                         </div>
@@ -1055,9 +1372,7 @@
     <!-- FOOTER -->
     <footer class="relative z-10 py-12 px-6 border-t border-gray-800">
         <div class="max-w-7xl mx-auto text-center">
-            <p style="color: var(--body-color);" class="mb-4">
-                © 2025 Biotech × Environment • Engineered with <span style="color: var(--accent);">♥</span> and DNA
-            </p>
+            <p style="color: var(--body-color);" class="mb-4">© 2025 Manaal — Patent pending on the chaos, not the code.</p>
             <div class="flex gap-6 justify-center items-center">
                 <a href="https://www.linkedin.com/in/manaal-fatima-869732391?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noopener noreferrer" style="color: var(--body-color);" class="hover:opacity-70 transition-opacity flex items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1130,35 +1445,50 @@
             renderer.setClearColor(0x000000, 0);
             container.appendChild(renderer.domElement);
 
-            scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-            const light1 = new THREE.PointLight(0x9d00ff, 1.3, 25);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const light1 = new THREE.PointLight(0xffffff, 1.1, 25);
             light1.position.set(5, 5, 5);
             scene.add(light1);
-            const light2 = new THREE.PointLight(0x4FE0B0, 1.1, 25);
+            const light2 = new THREE.PointLight(0x4FE0B0, 0.7, 25);
             light2.position.set(-5, -3, 4);
             scene.add(light2);
 
             const group = new THREE.Group();
             scene.add(group);
 
+            // Technical grid floor
+            const grid = new THREE.GridHelper(7, 14, 0x4FE0B0, 0x2a3530);
+            grid.position.y = -3;
+            grid.material.transparent = true;
+            grid.material.opacity = 0.15;
+            scene.add(grid);
+
             const spokeCount = 8;
             const ringRadius = 1.8;
 
-            // Cytoplasmic + nuclear rings (8 nucleoporin "spokes" each)
-            const spokeGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.55, 12);
+            // Cytoplasmic + nuclear rings (8 nucleoporin "spokes" each) — muted metallic
+            const spokeGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.55, 16);
             const spokeMat = new THREE.MeshStandardMaterial({
-                color: 0x4FE0B0,
-                metalness: 0.35,
-                roughness: 0.35,
-                emissive: 0x0d3d2e,
-                emissiveIntensity: 0.4
+                color: 0xB0B8C4,
+                metalness: 0.6,
+                roughness: 0.4,
+                emissive: 0x161a1e,
+                emissiveIntensity: 0.15
             });
             const spokeMat2 = new THREE.MeshStandardMaterial({
-                color: 0x9d00ff,
-                metalness: 0.35,
+                color: 0x7A8494,
+                metalness: 0.6,
+                roughness: 0.4,
+                emissive: 0x14171b,
+                emissiveIntensity: 0.15
+            });
+            const subunitGeo = new THREE.SphereGeometry(0.09, 12, 12);
+            const subunitMat = new THREE.MeshStandardMaterial({
+                color: 0xD8DEE6,
+                metalness: 0.5,
                 roughness: 0.35,
-                emissive: 0x2a0d4d,
-                emissiveIntensity: 0.4
+                emissive: 0x1a1d22,
+                emissiveIntensity: 0.12
             });
 
             for (let i = 0; i < spokeCount; i++) {
@@ -1169,20 +1499,26 @@
                 const topSpoke = new THREE.Mesh(spokeGeo, spokeMat);
                 topSpoke.position.set(x, 0.5, z);
                 group.add(topSpoke);
+                const topSub = new THREE.Mesh(subunitGeo, subunitMat);
+                topSub.position.set(x * 1.05, 0.8, z * 1.05);
+                group.add(topSub);
 
                 const bottomSpoke = new THREE.Mesh(spokeGeo, spokeMat2);
                 bottomSpoke.position.set(x, -0.5, z);
                 group.add(bottomSpoke);
+                const bottomSub = new THREE.Mesh(subunitGeo, subunitMat);
+                bottomSub.position.set(x * 1.05, -0.8, z * 1.05);
+                group.add(bottomSub);
             }
 
-            // Central channel
-            const channelGeo = new THREE.TorusGeometry(1.1, 0.25, 20, 40);
+            // Central channel — the one accent highlight
+            const channelGeo = new THREE.TorusGeometry(1.1, 0.25, 24, 48);
             const channelMat = new THREE.MeshStandardMaterial({
-                color: 0xFF6B6B,
-                metalness: 0.4,
-                roughness: 0.25,
-                emissive: 0x4d1414,
-                emissiveIntensity: 0.5
+                color: 0xE0645A,
+                metalness: 0.5,
+                roughness: 0.3,
+                emissive: 0x2a0f0d,
+                emissiveIntensity: 0.3
             });
             const channel = new THREE.Mesh(channelGeo, channelMat);
             channel.rotation.x = Math.PI / 2;
@@ -1190,15 +1526,17 @@
 
             // Cytoplasmic filaments (radiating upward/outward)
             const filamentMat = new THREE.MeshStandardMaterial({
-                color: 0xff1493,
-                emissive: 0x4d0d33,
-                emissiveIntensity: 0.4
+                color: 0xEDF2F7,
+                metalness: 0.3,
+                roughness: 0.45,
+                emissive: 0x15181c,
+                emissiveIntensity: 0.12
             });
             for (let i = 0; i < spokeCount; i++) {
                 const angle = (i / spokeCount) * Math.PI * 2;
                 const x = Math.cos(angle) * ringRadius;
                 const z = Math.sin(angle) * ringRadius;
-                const filGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.1, 6);
+                const filGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.1, 8);
                 const fil = new THREE.Mesh(filGeo, filamentMat);
                 fil.position.set(x * 1.15, 1.15, z * 1.15);
                 fil.lookAt(x * 2.3, 2.3, z * 2.3);
@@ -1208,9 +1546,11 @@
 
             // Nuclear basket (converging cage below)
             const basketMat = new THREE.MeshStandardMaterial({
-                color: 0x4FE0B0,
-                emissive: 0x0d3d2e,
-                emissiveIntensity: 0.3
+                color: 0x8FA3B0,
+                metalness: 0.4,
+                roughness: 0.35,
+                emissive: 0x11151a,
+                emissiveIntensity: 0.12
             });
             const basketBottom = new THREE.Vector3(0, -2.2, 0);
             for (let i = 0; i < spokeCount; i++) {
@@ -1220,7 +1560,7 @@
                 const top = new THREE.Vector3(x, -0.6, z);
                 const dir = new THREE.Vector3().subVectors(basketBottom, top);
                 const len = dir.length();
-                const legGeo = new THREE.CylinderGeometry(0.035, 0.035, len, 6);
+                const legGeo = new THREE.CylinderGeometry(0.035, 0.035, len, 8);
                 const leg = new THREE.Mesh(legGeo, basketMat);
                 leg.position.copy(top).add(dir.clone().multiplyScalar(0.5));
                 leg.lookAt(basketBottom);
@@ -1228,7 +1568,7 @@
                 group.add(leg);
             }
             const basketRing = new THREE.Mesh(
-                new THREE.TorusGeometry(0.35, 0.03, 10, 20),
+                new THREE.TorusGeometry(0.35, 0.03, 12, 24),
                 basketMat
             );
             basketRing.position.copy(basketBottom);
@@ -1292,9 +1632,6 @@
         const npcFacts = [
             "It's basically a bouncer club for your genome — checking IDs on every molecule that wants in or out of the nucleus.",
             "Around 30 million molecules can pass through nuclear pores every single minute inside a busy cell.",
-            "A typical human cell has 2,000–4,000 of these pores puncturing its nuclear envelope like tiny airlocks.",
-            "It's built from over 30 different proteins, repeated dozens of times — one of the largest molecular machines in biology.",
-            "Small molecules just diffuse through freely. Anything bigger? It needs an escort, or it's not getting in.",
             "This exact structure (PDB 7R5K) was modeled at near-atomic resolution — we can basically see individual amino acids doing their job."
         ];
         let npcFactIndex = 0;
