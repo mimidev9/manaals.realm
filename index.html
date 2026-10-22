@@ -447,92 +447,6 @@
           display:none;
         }
 
-        /* ====== COMING SOON PROJECT CARDS ====== */
-        .blurred-content{
-          filter: blur(5px);
-          opacity: 0.4;
-          transition: filter .4s ease, opacity .4s ease;
-          pointer-events: none;
-          user-select: none;
-        }
-        .project-card:hover .blurred-content{
-          filter: blur(3px);
-          opacity: 0.5;
-        }
-        .coming-soon-overlay{
-          position: absolute;
-          inset: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          z-index: 10;
-          text-align: center;
-          padding: 20px;
-        }
-        .coming-soon-badge{
-          font-size: 12px;
-          font-weight: 700;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          padding: 8px 18px;
-          border-radius: 999px;
-          background: rgba(0,0,0,0.6);
-          backdrop-filter: blur(2px);
-          transition: all .35s ease;
-        }
-        .project-card:hover .coming-soon-badge{
-          transform: scale(1.05);
-        }
-        .coming-soon-sub{
-          font-size: 12px;
-          font-style: italic;
-          color: var(--body-color);
-          opacity: 0;
-          transform: translateY(4px);
-          transition: all .35s ease;
-          max-width: 220px;
-        }
-        .project-card:hover .coming-soon-sub{
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        /* ====== COMING SOON TOAST ====== */
-        #comingSoonToast{
-          position: fixed;
-          bottom: 30px;
-          left: 50%;
-          transform: translateX(-50%) translateY(20px) scale(0.92);
-          opacity: 0;
-          pointer-events: none;
-          z-index: 100;
-          background: rgba(10,10,10,0.94);
-          border: 1px solid var(--accent);
-          border-radius: 14px;
-          padding: 14px 22px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          box-shadow: 0 0 30px rgba(79,224,176,0.25);
-          transition: opacity .35s ease, transform .35s ease;
-          max-width: 90%;
-        }
-        #comingSoonToast.show{
-          opacity: 1;
-          transform: translateX(-50%) translateY(0) scale(1);
-        }
-        #comingSoonToast .toast-icon{
-          font-size: 18px;
-          flex-shrink: 0;
-        }
-        #comingSoonToast .toast-text{
-          font-size: 14px;
-          color: var(--name-color);
-          line-height: 1.4;
-        }
-
         /* ====== NUCLEAR PORE COMPLEX VIEWER ====== */
         .npc-viewer-wrap{
           display: grid;
@@ -771,6 +685,90 @@
           .npc-viewer-wrap{ gap: 14px; }
           .npc-fact-panel{ padding: 18px; }
         }
+    
+    .pf-wrap{ max-width: 720px; }
+    .pf-kicker{
+        font-size: 14px; font-style: italic; color: var(--body-color); margin-bottom: 14px;
+    }
+    .pf-grid{
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+    }
+    @media (max-width: 600px){ .pf-grid{ grid-template-columns: 1fr; } }
+
+    .pf-card{
+        position: relative; display: flex; gap: 14px; align-items: flex-start;
+        padding: 18px; border-radius: 16px; cursor: pointer;
+        border: 1.5px solid color-mix(in srgb, var(--c) 55%, transparent);
+        background: linear-gradient(135deg, color-mix(in srgb, var(--c) 10%, transparent), rgba(255,255,255,0.01));
+        transition: transform .25s ease, box-shadow .35s ease, border-color .35s ease;
+        will-change: transform;
+    }
+    .pf-card:hover, .pf-card.open{
+        border-color: var(--c);
+        box-shadow: 0 0 34px color-mix(in srgb, var(--c) 40%, transparent);
+    }
+    .pf-card:focus-visible{ outline: 2px solid var(--c); outline-offset: 3px; }
+    .pf-mystery{ border-style: dashed; }
+
+    .pf-icon{
+        position: relative; flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center; color: var(--c);
+        background: color-mix(in srgb, var(--c) 16%, transparent);
+    }
+    .pf-icon::after{
+        content: ''; position: absolute; inset: 0; border-radius: 14px; z-index: -1;
+        background: var(--c); filter: blur(14px); opacity: .35;
+        animation: pf-pulse 2.6s ease-in-out infinite;
+    }
+    .pf-card:hover .pf-icon svg{ transform: scale(1.14) rotate(-6deg); }
+    .pf-icon svg{ transition: transform .35s ease; }
+
+    .pf-metric{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+    .pf-num{
+        font-size: 26px; font-weight: 800; line-height: 1.1; color: var(--c);
+        text-shadow: 0 0 16px color-mix(in srgb, var(--c) 60%, transparent);
+    }
+    .pf-unit{ font-size: 12.5px; color: var(--body-color); }
+    .pf-title{ font-size: 17px; font-weight: 700; color: var(--name-color); margin-bottom: 4px; }
+    .pf-line{ font-size: 14px; line-height: 1.55; color: var(--body-color); }
+
+    .pf-secret{
+        max-height: 0; opacity: 0; overflow: hidden; margin-top: 0;
+        font-size: 13.5px; font-style: italic; line-height: 1.55; color: var(--c);
+        transition: max-height .4s ease, opacity .4s ease, margin-top .4s ease;
+    }
+    .pf-card.open .pf-secret{
+        max-height: 120px; opacity: 1; margin-top: 10px; padding-top: 10px;
+        border-top: 1px dashed color-mix(in srgb, var(--c) 45%, transparent);
+    }
+    .pf-hint{
+        display: inline-block; margin-top: 10px; font-size: 11.5px; color: var(--c); opacity: .75;
+    }
+    .pf-card.open .pf-hint{ display: none; }
+
+    .pf-all{
+        margin-top: 18px; padding: 9px 20px; border-radius: 999px; cursor: pointer;
+        border: 1px solid var(--accent); color: var(--accent); background: transparent;
+        font-size: 14px; font-weight: 600; transition: all .3s ease;
+    }
+    .pf-all:hover{ background: rgba(79,224,176,0.1); transform: translateY(-1px); }
+
+    @keyframes pf-pulse{ 0%,100%{ opacity: .25; } 50%{ opacity: .6; } }
+    @keyframes pf-flicker{ 0%,100%{ transform: scaleY(1) skewX(0); } 40%{ transform: scaleY(1.08) skewX(-3deg); } 70%{ transform: scaleY(.95) skewX(3deg); } }
+    @keyframes pf-drift{ 0%,100%{ transform: translateX(0); } 50%{ transform: translateX(1.6px); } }
+    @keyframes pf-twinkle{ 0%,100%{ opacity: .25; } 50%{ opacity: 1; } }
+    @keyframes pf-wiggle{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-10deg); } 75%{ transform: rotate(10deg); } }
+
+    .pf-flame{ transform-box: fill-box; transform-origin: 50% 100%; animation: pf-flicker 1.6s ease-in-out infinite; }
+    .pf-wind path{ animation: pf-drift 3s ease-in-out infinite; }
+    .pf-wind path:nth-child(2){ animation-delay: .4s; }
+    .pf-wind path:nth-child(3){ animation-delay: .8s; }
+    .pf-twinkle{ animation: pf-twinkle 2s ease-in-out infinite; }
+    .pf-wiggle{ display: inline-block; animation: pf-wiggle 2.2s ease-in-out infinite; }
+
+    @media (prefers-reduced-motion: reduce){
+        .pf-card, .pf-icon::after, .pf-flame, .pf-wind path, .pf-twinkle, .pf-wiggle{ animation: none !important; transition: none !important; }
+    }
     </style>
 </head>
 <body class="bg-black text-white min-h-screen">
@@ -918,32 +916,98 @@
                     </p>
                 </div>
 
-                <!-- Featured Ongoing Project Teaser -->
-                <div class="featured-teaser mb-8">
-                    <div class="featured-teaser-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 6 L7 3"></path>
-                            <path d="M15 6 L17 3"></path>
-                            <ellipse cx="12" cy="8" rx="2.6" ry="2.2"></ellipse>
-                            <ellipse cx="12" cy="12.3" rx="3.6" ry="2.8"></ellipse>
-                            <ellipse cx="12" cy="17.5" rx="4.8" ry="4"></ellipse>
-                            <path d="M8.5 11 L4 9"></path>
-                            <path d="M8.5 13 L3 13"></path>
-                            <path d="M8.5 15.5 L4 17.5"></path>
-                            <path d="M15.5 11 L20 9"></path>
-                            <path d="M15.5 13 L21 13"></path>
-                            <path d="M15.5 15.5 L20 17.5"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <span class="featured-teaser-tag">🔍 Ongoing Investigation</span>
-                        <h3 class="featured-teaser-title">Project ISOPTERA</h3>
-                        <p class="featured-teaser-line">
-                            Could the answer to one of our planet's most stubborn problems be hiding inside a termite's gut?
-                            The evidence is still being gathered — come back soon to find out.
-                        </p>
-                    </div>
-                </div>
+                <!-- Featured Projects (landing page) -->
+<div class="pf-wrap mb-8">
+    <p class="pf-kicker">Fresh from the lab: poke a card.</p>
+
+    <div class="pf-grid">
+
+        <!-- Saaf Chulha -->
+        <div class="pf-card" style="--c:#ff8a3d;" tabindex="0" role="button" aria-expanded="false">
+            <div class="pf-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path class="pf-flame" d="M12 2c.8 3 4 4.4 4 8.2a4 4 0 0 1-8 0c0-1.5.6-2.7 1.6-3.7.2 1 .8 1.7 1.6 2C11.6 7 11.4 4.6 12 2z"></path>
+                    <rect x="5" y="17.5" width="6" height="3.5" rx="1"></rect>
+                    <rect x="13" y="17.5" width="6" height="3.5" rx="1"></rect>
+                </svg>
+            </div>
+            <div class="pf-body">
+                <div class="pf-metric"><span class="pf-num" data-count="40" data-suffix="%">40%</span><span class="pf-unit">less kitchen smoke</span></div>
+                <h3 class="pf-title">Saaf Chulha</h3>
+                <p class="pf-line">Rice-husk waste, pressed into briquettes that burn cleaner than wood.</p>
+                <p class="pf-secret">Now cooking dinner in 40+ homes in Dera Afghana. The rice husks never saw it coming.</p>
+                <span class="pf-hint">Tap for the plot twist</span>
+            </div>
+        </div>
+
+        <!-- Saans -->
+        <div class="pf-card" style="--c:#39ff14;" tabindex="0" role="button" aria-expanded="false">
+            <div class="pf-icon">
+                <svg class="pf-wind" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"></path>
+                    <path d="M9.6 4.6A2 2 0 1 1 11 8H2"></path>
+                    <path d="M12.6 19.4A2 2 0 1 0 14 16H2"></path>
+                </svg>
+            </div>
+            <div class="pf-body">
+                <div class="pf-metric"><span class="pf-num" data-count="35" data-suffix="%">35%</span><span class="pf-unit">cleaner classroom air</span></div>
+                <h3 class="pf-title">Saans</h3>
+                <p class="pf-line">A moss and algae filter that breathes for five all-girls schools.</p>
+                <p class="pf-secret">Next up: reading climate data to catch the exact moment smog peaks. The moss breathes, I do the math.</p>
+                <span class="pf-hint">Tap for the plot twist</span>
+            </div>
+        </div>
+
+        <!-- Windowsill Menagerie -->
+        <div class="pf-card" style="--c:#9d00ff;" tabindex="0" role="button" aria-expanded="false">
+            <div class="pf-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="7" y="2.5" width="10" height="3" rx="1"></rect>
+                    <path d="M8 5.5v1A4 4 0 0 0 6.5 9.5V19a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2V9.5A4 4 0 0 0 16 6.5v-1"></path>
+                    <circle class="pf-twinkle" cx="10" cy="14" r="0.9" fill="currentColor" stroke="none"></circle>
+                    <circle class="pf-twinkle" style="animation-delay:.5s" cx="14" cy="12" r="0.9" fill="currentColor" stroke="none"></circle>
+                    <circle class="pf-twinkle" style="animation-delay:1s" cx="12.5" cy="17" r="1.1" fill="currentColor" stroke="none"></circle>
+                </svg>
+            </div>
+            <div class="pf-body">
+                <div class="pf-metric"><span class="pf-num">Lights out</span><span class="pf-unit">jars that glow</span></div>
+                <h3 class="pf-title">Windowsill Menagerie</h3>
+                <p class="pf-line">A zoo of glowing bacteria and bacterial cellulose, kept in jars.</p>
+                <p class="pf-secret">No grand purpose. Just the wonder of watching life form on a windowsill.</p>
+                <span class="pf-hint">Tap for the plot twist</span>
+            </div>
+        </div>
+
+        <!-- ISOPTERA -->
+        <div class="pf-card pf-mystery" style="--c:#4FE0B0;" tabindex="0" role="button" aria-expanded="false">
+            <div class="pf-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6 L7 3"></path>
+                    <path d="M15 6 L17 3"></path>
+                    <ellipse cx="12" cy="8" rx="2.6" ry="2.2"></ellipse>
+                    <ellipse cx="12" cy="12.3" rx="3.6" ry="2.8"></ellipse>
+                    <ellipse cx="12" cy="17.5" rx="4.8" ry="4"></ellipse>
+                    <path d="M8.5 11 L4 9"></path>
+                    <path d="M8.5 13 L3 13"></path>
+                    <path d="M8.5 15.5 L4 17.5"></path>
+                    <path d="M15.5 11 L20 9"></path>
+                    <path d="M15.5 13 L21 13"></path>
+                    <path d="M15.5 15.5 L20 17.5"></path>
+                </svg>
+            </div>
+            <div class="pf-body">
+                <div class="pf-metric"><span class="pf-num pf-wiggle">?</span><span class="pf-unit">ongoing investigation</span></div>
+                <h3 class="pf-title">Project ISOPTERA</h3>
+                <p class="pf-line">Could the answer to plastic waste be hiding inside a termite's gut?</p>
+                <p class="pf-secret">Lahore termites, PET and LDPE, and a very patient scale. The evidence is still being gathered.</p>
+                <span class="pf-hint">Tap to open the case file</span>
+            </div>
+        </div>
+
+    </div>
+
+    <button type="button" class="pf-all" onclick="goToWork()">Browse all the projects</button>
+</div>
 
                 <div class="hover-group cursor-default mb-10">
                     <span style="font-size:clamp(16px, 3vw, 20px); color: var(--accent); font-weight:500;">Go ahead, hover.</span>
@@ -1053,8 +1117,7 @@
                             </p>
                         </div>
                         <p style="color: var(--body-color); font-size:17px; line-height:1.7;">
-                            I am a biotech enthusiast with a deep commitment to environmental sustainability, a particular passion for microbial solutions, and the occasional tendency to name my favorite agar plates. I bridge lab work, synthetic biology, 3D modeling, and environmental science to tackle plastic degradation and climate resilience, and the eternal question of whether bacteria will cooperate today.
-                            The mission? Deploy biotech where it matters, revive the planet, and keep going— even when the bacteria have other plans.
+                            I'm a biotech enthusiast on a mission to protect women from toxic air. It started with moss and algae filters in all-girls classrooms and biochar briquettes that take the smoke out of kitchens, because the people breathing the dirtiest air are rarely the ones writing the policy. I bridge lab work, environmental biology, and climate data with gender studies and public policy, since a clean-air solution only counts if it reaches the women who need it. I have a particular passion for microbial solutions, and the occasional tendency to name my favorite agar plates, and the eternal question of whether bacteria will cooperate today. The mission? Become an environmental scientist and advocate who uses biology to clear the air, and keep going, even when the bacteria have other plans.
                         </p>
                     </div>
 
@@ -1438,12 +1501,6 @@
         </div>
     </footer>
 
-    <!-- Coming Soon Toast -->
-    <div id="comingSoonToast">
-        <span class="toast-icon">🧫</span>
-        <span class="toast-text">This experiment's still in progress — come back soon to watch the clumsy journey unfold.</span>
-    </div>
-
     <script>
         // Generate floating particles
         const particlesContainer = document.getElementById('particles');
@@ -1712,18 +1769,57 @@
             });
         });
 
-        // Coming Soon toast on project card click
-        const comingSoonToast = document.getElementById('comingSoonToast');
-        let toastTimeout;
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('click', () => {
-                comingSoonToast.classList.add('show');
-                clearTimeout(toastTimeout);
-                toastTimeout = setTimeout(() => {
-                    comingSoonToast.classList.remove('show');
-                }, 3500);
+    // Take the visitor from the landing page to the Work section
+    function goToWork() {
+        document.querySelector("nav [onclick=\"showSection('work')\"]").click();
+    }
+
+    // Featured project cards: count-up numbers, tilt, tap to reveal
+    (function () {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const canHover = window.matchMedia('(hover: hover)').matches;
+
+        function countUp(el) {
+            const to = Number(el.dataset.count);
+            const suffix = el.dataset.suffix || '';
+            if (reduce) { el.textContent = to + suffix; return; }
+            const start = performance.now();
+            const duration = 1100;
+            (function tick(now) {
+                const p = Math.min((now - start) / duration, 1);
+                el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+            })(start);
+        }
+
+        function toggle(card) {
+            const open = card.classList.toggle('open');
+            card.setAttribute('aria-expanded', open);
+        }
+
+        document.querySelectorAll('.pf-card').forEach(card => {
+            const num = card.querySelector('[data-count]');
+            if (num) {
+                countUp(num);
+                card.addEventListener('mouseenter', () => countUp(num));
+            }
+
+            card.addEventListener('click', () => toggle(card));
+            card.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(card); }
             });
+
+            if (!reduce && canHover) {
+                card.addEventListener('mousemove', e => {
+                    const r = card.getBoundingClientRect();
+                    const x = (e.clientX - r.left) / r.width - 0.5;
+                    const y = (e.clientY - r.top) / r.height - 0.5;
+                    card.style.transform = 'perspective(700px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) translateY(-3px)';
+                });
+                card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+            }
         });
+    })();
     </script>
 
 </body>
